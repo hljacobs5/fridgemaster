@@ -9,7 +9,11 @@ app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
 
 app.get('/api/v1/ingredients', (req, res) => {
-  res.status(200).json({});
+  database('ingredients').select()
+    .then(ingredients => {
+      res.status(200).json(ingredients)
+    })
+    .catch(error => res.json(error))
 });
 
 app.listen(app.get('port'), () => {
