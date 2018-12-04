@@ -16,7 +16,6 @@ describe('server', () => {
         .get('/api/v1/ingredients')
         .end((error, res) => {
           expect(res).to.have.status(200);
-          console.log(process.ENV.DATABASE_URL);
           done();
         });
     });
