@@ -10,24 +10,8 @@ module.exports = {
     },
     seeds: {
       directory: './db/seeds/dev'
-    }
+    },
     useNullAsDefault: true,
   },
-
-  production: {
-    client: 'postgresql',
-    connection: {
-      database: 'ssl',
-      user:     'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
 
 };
