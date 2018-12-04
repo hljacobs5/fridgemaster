@@ -10,7 +10,8 @@ describe('server', () => {
     beforeEach(done => {
       done();
     });
-    it('Should return a 200 status', done => {
+
+    it('should return a 200 status', done => {
       chai
         .request(app)
         .get('/api/v1/ingredients')
@@ -19,6 +20,14 @@ describe('server', () => {
           done();
         });
     });
-    //    it('', done => {});
+
+    it('should return an array', done => {
+      chai.request(app)
+        .get('/api/v1/ingredients')
+        .end((error, res) => {
+          expect(res.body).to.be.a('array')
+          done();
+        });
+    });
   });
 });
