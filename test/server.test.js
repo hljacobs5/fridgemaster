@@ -47,7 +47,18 @@ describe('server', () => {
             done();
           });
       });
+      it('should return an array of objects', done => {
+        chai.request(app)
+          .get('/api/v1/recipes')
+          .end((error, res) => {
+            expect(res.body).to.be.a('array')
+            expect(res.body[0]).to.have.property('id')
+            expect(res.body[0]).to.have.property('recipe_name')
+            expect(res.body[0]).to.have.property('created_at')
+            expect(res.body[0]).to.have.property('updated_at')
+            done()
+          })
+      })
     });
   });
 });
-// it('should ', done => {});

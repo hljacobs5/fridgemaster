@@ -16,6 +16,14 @@ app.get('/api/v1/ingredients', (req, res) => {
     .catch(error => res.json(error))
 });
 
+app.get('/api/v1/recipes', (req, res) => {
+  database('recipes').select()
+    .then(recipes => {
+      res.status(200).json(recipes)
+    })
+    .catch(error => res.json(error))
+})
+
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });
