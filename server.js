@@ -24,6 +24,16 @@ app.get('/api/v1/recipes', (req, res) => {
     .catch(error => res.json(error))
 })
 
+app.post('/api/v1/recipes', (req, res) => {
+  const recipe = req.body
+
+  database('recipes').insert(recipe, 'id')
+    .then(recipeIds => {
+      res.status(201).json({id: recipeIds[0]})
+    })
+    .catch(error => res.status(500).json(error))
+})
+
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });

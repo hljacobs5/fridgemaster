@@ -44,6 +44,7 @@ describe('server', () => {
           .get('/api/v1/recipes')
           .end((error, res) => {
             expect(error).to.equal(null);
+            expect(res).to.have.status(200)
             done();
           });
       });
@@ -51,6 +52,7 @@ describe('server', () => {
         chai.request(app)
           .get('/api/v1/recipes')
           .end((error, res) => {
+            expect(error).to.be.null
             expect(res.body).to.be.a('array')
             expect(res.body[0]).to.have.property('id')
             expect(res.body[0]).to.have.property('recipe_name')
@@ -60,5 +62,21 @@ describe('server', () => {
           })
       })
     });
+    describe('POST', () => {
+      it('should return a 201 status if successful', done => {
+        const newRecipe = {
+          recipe_name: 'spaghetti',
+        }
+        chai.request(app)
+          .post('/api/v1/recipes')
+          .send(newRecipe)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(201)
+            expect(res.body).to.have.property('id')
+            done()
+          })
+      })
+    })
   });
 });
