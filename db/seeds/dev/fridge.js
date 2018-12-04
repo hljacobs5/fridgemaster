@@ -2,32 +2,21 @@ const mockRecipes = [
   {
     recipe_name: 'chicken pot pie',
     ingredients: [
-      {
-        ingredient_name: 'chicken',
-        aisle: 'meat',
-      }, 
-      {
-        ingredient_name:'carrots', 
-        aisle: 'produce'}, 
-      {
-        ingredient_name:'peas', 
-        aisle: 'produce'}, 
-      {
-        ingredient_name:'pie crust', 
-        aisle: 'produce'}, 
-      {
-        ingredient_name:'gravy', 
-        aisle: 'produce'}
+      {ingredient_name: 'chicken', aisle: 'meat'}, 
+      {ingredient_name:'carrots', aisle: 'produce'}, 
+      {ingredient_name:'peas', aisle: 'produce'}, 
+      {ingredient_name:'pie crust', aisle: 'produce'}, 
+      {ingredient_name:'gravy', aisle: 'produce'}
     ],
     steps: ['cook the chicken', 'make the rest of the pot pie'],
   },
   {
     recipe_name: 'pot roast',
     ingredients: [
-      {aisle: 'gravy',ingredient_name:'pot roast'}, 
-      {aisle: 'gravy',ingredient_name:'nice taters'}, 
-      {aisle: 'gravy',ingredient_name:'gravy'}, 
-      {aisle: 'gravy',ingredient_name:'carrots'}],
+      {aisle: 'gravy', ingredient_name:'pot roast'}, 
+      {aisle: 'gravy', ingredient_name:'nice taters'}, 
+      {aisle: 'gravy', ingredient_name:'gravy'}, 
+      {aisle: 'gravy', ingredient_name:'carrots'}],
     steps: [
       'open crockpot',
       'insert potatoes',
