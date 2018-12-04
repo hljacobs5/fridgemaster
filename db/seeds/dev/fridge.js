@@ -41,7 +41,7 @@ function createRecipe(knex, recipe) {
   return knex('recipes').insert({recipe_name: recipe.name}, 'id');
 }
 
-function createIngredients(knex, ingredient) {
+function createIngredient(knex, ingredient) {
   return knex('ingredients').insert({ingredient_name: ingredient});
 }
 
