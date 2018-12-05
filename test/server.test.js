@@ -77,6 +77,17 @@ describe('server', () => {
             done()
           })
       })
+      it('should return a 422 status if required parameter is missing', (done) => {
+        const newRecipe = {name: 'Mark'}
+        chai.request(app)
+          .post('/api/v1/recipes')
+          .send(newRecipe)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(422)
+            done()
+          })
+      })
     })
   });
 });

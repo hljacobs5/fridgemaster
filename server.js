@@ -27,6 +27,10 @@ app.get('/api/v1/recipes', (req, res) => {
 app.post('/api/v1/recipes', (req, res) => {
   const recipe = req.body
 
+  if (!recipe.recipe_name) {
+    res.status(422).json({Error: 'Missing recipe_name.'})
+  }
+
   database('recipes').insert(recipe, 'id')
     .then(recipeIds => {
       res.status(201).json({id: recipeIds[0]})
