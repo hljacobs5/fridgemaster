@@ -78,7 +78,18 @@ describe('server', () => {
           })
       })
       it('should return a 422 status if required parameter is missing', (done) => {
-        const newRecipe = {name: 'Mark'}
+        const newRecipe = {}
+        chai.request(app)
+          .post('/api/v1/recipes')
+          .send(newRecipe)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(422)
+            done()
+          })
+      })
+      it('should return a 422 if undesired parameter is passed', (done) => {
+        const newRecipe = {name: 'Mark', program: 'FE', friends: 'Drake'}
         chai.request(app)
           .post('/api/v1/recipes')
           .send(newRecipe)

@@ -27,15 +27,29 @@ app.get('/api/v1/recipes', (req, res) => {
 app.post('/api/v1/recipes', (req, res) => {
   const recipe = req.body
 
+  let missingProperties = []
+
+
+
+
+  for(let key in recipe) {
+    if(key !== 'recipe_name') {
+      missingProperties = [...missingProperties, key]
+    }
+  }
+  
   if (!recipe.recipe_name) {
-    res.status(422).json({Error: 'Missing recipe_name.'})
+    res.status(422).json({message: 'Missing parameter of recipe_name. {recipe_name: <STRING>}'})
+  } else if(missingProperties.length) {
+    res.status(422).json({message: `Extra properties of ${missingProperties} included.`})
+  } else {
+    database('recipes').insert(recipe, 'id')
+      .then(recipeIds => {
+        res.status(201).json({id: recipeIds[0]})
+      })
+      .catch(error => res.status(500).json(error))
   }
 
-  database('recipes').insert(recipe, 'id')
-    .then(recipeIds => {
-      res.status(201).json({id: recipeIds[0]})
-    })
-    .catch(error => res.status(500).json(error))
 })
 
 app.listen(app.get('port'), () => {
