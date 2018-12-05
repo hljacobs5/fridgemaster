@@ -13,5 +13,15 @@ module.exports = {
     },
     useNullAsDefault: true,
   },
-
+  testing: {
+    client: 'pg',
+    connection: 'postgres://localhost/testmaster',
+    migrations: {
+      directory: './db/migrations',
+    },
+    seeds: {
+      directory: './db/seeds/testing',
+    },
+    useNullAsDefault: true,
+  },
 };
