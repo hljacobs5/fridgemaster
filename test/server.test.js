@@ -1,15 +1,26 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../server');
+const config = require('../knexfile')[environment]
+const database = require('knex')(config)
+
+const environment = 'testing';
+
 
 const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('server', () => {
   describe('/api/v1/ingredients', () => {
-    beforeEach(done => {
-      done();
-    });
+    before(done => {
+      database.migrate.latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => {
+          throw error
+        })
+        .done()
+    })
     describe('GET', () => {
       it('should return a 200 status', done => {
         chai
@@ -35,8 +46,23 @@ describe('server', () => {
           });
       });
     });
+    after(done => {
+      database.migrate.rollback()
+        .then(() => done())
+        .catch((error) => throw error)
+        .done()
+    })
   });
   describe('/api/v1/recipes', () => {
+    before(done => {
+      database.migrate.latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => {
+          throw error
+        })
+        .done()
+    })
     describe('GET', () => {
       it('should return a 200 status', done => {
         chai
@@ -92,4 +118,37 @@ describe('server', () => {
       })
     })
   });
+  after(done => {
+    database.migrate.rollback()
+      .then(() => done())
+      .catch((error) => throw error)
+      .done()
+  })
+  describe('/api/v1/recipes/:id', () => {
+    before(done => {
+      database.migrate.latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => {
+          throw error
+        })
+        .done()
+    })
+    describe('PUT', () => {
+      it('should update a recipe name', done => {
+        const name = {
+          recipe_name: 'billys bootastic bacon & eggs'
+        }
+        chai.request(app)
+          .put('/api/v1/recipes/2')
+          .send()
+      })
+    })
+  after(done => {
+    database.migrate.rollback()
+      .then(() => done())
+      .catch((error) => throw error)
+      .done()
+  })
+  })
 });

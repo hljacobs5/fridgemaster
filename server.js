@@ -1,17 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const knex = require('knex');
+
 const environment = process.env.NODE_ENV || 'development';
 const config = require('./knexfile')[environment];
-const database = require('knex')(config);
+
+const database = knex(config);
 const app = express();
 
-// DONE GET /api/v1/ingredients
+// * GET /api/v1/ingredients
 // GET /api/v1/ingredients/:id/recipes
-// DONE GET /api/v1/recipes
+// * GET /api/v1/recipes
 // GET /api/v1/recipes/:id/ingredients
 // GET /api/v1/recipes/:id/steps
 // POST /api/v1/recipes/:id/steps
-// DONE POST /api/v1/recipes
+// * POST /api/v1/recipes
 // PUT /api/v1/recipes/:id
 // PUT /api/v1/recipes/:recipe_id/steps/:step_num
 // DELETE /api/v1/recipes/:id
@@ -23,7 +26,7 @@ app.set('port', process.env.PORT || 3000);
 app.get('/api/v1/ingredients', (req, res) => {
   database('ingredients')
     .select()
-    .then(ingredients => {
+    .then((ingredients) => {
       res.status(200).json(ingredients);
     })
     .catch(error => res.json(error));
@@ -32,7 +35,7 @@ app.get('/api/v1/ingredients', (req, res) => {
 app.get('/api/v1/recipes', (req, res) => {
   database('recipes')
     .select()
-    .then(recipes => {
+    .then((recipes) => {
       res.status(200).json(recipes);
     })
     .catch(error => res.json(error));
@@ -42,11 +45,11 @@ app.post('/api/v1/recipes', async (req, res) => {
   const recipe = req.body;
   let missingProps = [];
 
-  for (let requiredParam of ['recipe_name', 'steps', 'ingredients']) {
+  ['recipe_name', 'steps', 'ingredients'].forEach((requiredParam) => {
     if (!recipe[requiredParam]) {
       missingProps = [...missingProps, requiredParam];
     }
-  }
+  });
   if (missingProps.length) {
     res.status(422).json({
       message: `Missing ${missingProps} parameters {recipe_name: <STRING>, steps: <ARRAY>, ingredients: <ARRAY>}`,
