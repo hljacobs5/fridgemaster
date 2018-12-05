@@ -1,1 +1,7 @@
-{"extends": "airbnb"}
+{
+"extends": "airbnb",
+"rules": {
+    "arrow-parens": 0,
+    "camelcase": 0,
+  }
+}

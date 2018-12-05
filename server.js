@@ -28,7 +28,7 @@ app.get('/api/v1/ingredients', async (req, res) => {
     const ingredients = await database('ingredients').select();
     res.status(200).json(ingredients);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({ error });
   }
 });
 
@@ -36,7 +36,7 @@ app.get('/api/v1/recipes', async (req, res) => {
   try {
     const recipes = await database('recipes').select();
     res.status(200).json(recipes);
-  } catch (eror) {
+  } catch (error) {
     res.status(500).json(error);
   }
 });
@@ -56,12 +56,12 @@ app.post('/api/v1/recipes', async (req, res) => {
     });
   } else {
     try {
-      const {recipe_name, ingredients, steps} = recipe;
-      const recipe_id = await database('recipes').insert({recipe_name}, 'id');
+      const { recipe_name, ingredients, steps } = recipe;
+      const recipe_id = await database('recipes').insert({ recipe_name }, 'id');
       const ingredientIds = await Promise.all(
         ingredients.map(ingredient => {
           return database('ingredients').insert(
-            {ingredient_name: ingredient},
+            { ingredient_name: ingredient },
             'id',
           );
         }),
@@ -69,16 +69,25 @@ app.post('/api/v1/recipes', async (req, res) => {
       const joinedIds = await Promise.all(
         ingredientIds.map(id => {
           return database('recipe_ingredients').insert(
-            {ingredient_id: id[0], recipe_id: recipe_id[0]},
+            { ingredient_id: id[0], recipe_id: recipe_id[0] },
             'id',
           );
         }),
       );
+      await Promise.all(
+        steps.map((step, index) => {
+          return database('recipe_steps').insert({
+            step_num: index + 1,
+            step_text: step,
+            recipe_id,
+          });
+        }),
+      );
       res
         .status(201)
-        .json({message: `Recipe ${recipe.name} inserted, id ${recipe_id}`});
+        .json({ message: `Recipe ${recipe.name} inserted, id ${recipe_id}` });
     } catch (error) {
-      res.status(500).json({error});
+      res.status(500).json({ error });
     }
   }
 });
