@@ -90,6 +90,10 @@ app.get('/api/v1/ingredients/:id/recipes', async (req, res) => {
 
   try {
     const recipeReferences = await database('recipe_ingredients').where('ingredient_id', id).select()
+    if(!recipeReferences.length) {
+      res.status(404).json({message: `ingredient with id ${id} does not exist please try harder`})
+      return
+    }
     const recipes = await Promise.all(recipeReferences.map(reference => {
       const { recipe_id } = reference
       return database('recipes').where('id', recipe_id).select()

@@ -168,7 +168,15 @@ describe('server', () => {
             done()
           })
       })
-      it('')
+      it('should return an error if ingredient does not exist', done => {
+        chai.request(app)
+          .get('/api/v1/ingredients/300/recipes')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
     })
     after(done => {
       database.migrate.rollback()
