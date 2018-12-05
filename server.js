@@ -59,29 +59,26 @@ app.post('/api/v1/recipes', async (req, res) => {
       const { recipe_name, ingredients, steps } = recipe;
       const recipe_id = await database('recipes').insert({ recipe_name }, 'id');
       const ingredientIds = await Promise.all(
-        ingredients.map(ingredient => {
-          return database('ingredients').insert(
-            { ingredient_name: ingredient },
-            'id',
-          );
-        }),
-      );
-      const joinedIds = await Promise.all(
-        ingredientIds.map(id => {
-          return database('recipe_ingredients').insert(
-            { ingredient_id: id[0], recipe_id: recipe_id[0] },
-            'id',
-          );
-        }),
+        ingredients.map(ingredient =>
+          database('ingredients').insert({ ingredient_name: ingredient }, 'id'),
+        ),
       );
       await Promise.all(
-        steps.map((step, index) => {
-          return database('recipe_steps').insert({
+        ingredientIds.map(id =>
+          database('recipe_ingredients').insert(
+            { ingredient_id: id[0], recipe_id: recipe_id[0] },
+            'id',
+          ),
+        ),
+      );
+      await Promise.all(
+        steps.map((step, index) =>
+          database('recipe_steps').insert({
             step_num: index + 1,
             step_text: step,
             recipe_id,
-          });
-        }),
+          }),
+        ),
       );
       res
         .status(201)
