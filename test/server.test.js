@@ -77,10 +77,9 @@ describe('server', () => {
           .end((error, res) => {
             expect(error).to.be.null
             expect(res.body).to.be.a('array')
-            expect(res.body[0]).to.have.property('id')
-            expect(res.body[0]).to.have.property('recipe_name')
-            expect(res.body[0]).to.have.property('created_at')
-            expect(res.body[0]).to.have.property('updated_at')
+            expect(res.body[0]).to.have.keys(['id', 'recipe_name', 'created_at', 'updated_at'])
+            expect(res.body[0].id).to.equal(1)
+            expect(res.body[0].recipe_name).to.equal('chicken pot pie')
             done()
           })
       })
@@ -165,6 +164,10 @@ describe('server', () => {
           .end((error, res) => {
             expect(error).to.be.null
             expect(res).to.have.status(200)
+            expect(res.body).to.be.a('array')
+            expect(res.body[0]).to.have.keys(['id', 'recipe_name', 'created_at', 'updated_at'])
+            expect(res.body[0].id).to.equal(1)
+            expect(res.body[0].recipe_name).to.equal('chicken pot pie')
             done()
           })
       })
