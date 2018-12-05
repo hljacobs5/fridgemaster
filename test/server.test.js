@@ -66,8 +66,8 @@ describe('server', () => {
       it('should return a 201 status if successful', done => {
         const newRecipe = {
           recipe_name: 'spaghetti',
-          ingredients: [],
-          steps: []
+          ingredients: ['meow', 'bark', 'tomato'],
+          steps: ['1', '2', '3'],
         }
         chai.request(app)
           .post('/api/v1/recipes')
@@ -75,23 +75,12 @@ describe('server', () => {
           .end((error, res) => {
             expect(error).to.be.null
             expect(res).to.have.status(201)
-            expect(res.body).to.have.property('id')
+            expect(res.body).to.have.property('message')
             done()
           })
       })
-      it('should return a 422 status if required parameter is missing', (done) => {
+      it('should return a 422 if required parameter is missing', (done) => {
         const newRecipe = {}
-        chai.request(app)
-          .post('/api/v1/recipes')
-          .send(newRecipe)
-          .end((error, res) => {
-            expect(error).to.be.null
-            expect(res).to.have.status(422)
-            done()
-          })
-      })
-      it('should return a 422 if undesired parameter is passed', (done) => {
-        const newRecipe = {name: 'Mark', program: 'FE', friends: 'Drake'}
         chai.request(app)
           .post('/api/v1/recipes')
           .send(newRecipe)
