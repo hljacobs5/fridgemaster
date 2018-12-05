@@ -66,6 +66,8 @@ describe('server', () => {
       it('should return a 201 status if successful', done => {
         const newRecipe = {
           recipe_name: 'spaghetti',
+          ingredients: [],
+          steps: []
         }
         chai.request(app)
           .post('/api/v1/recipes')
