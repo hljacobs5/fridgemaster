@@ -1,10 +1,11 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../server');
+
+const environment = 'testing';
 const config = require('../knexfile')[environment]
 const database = require('knex')(config)
 
-const environment = 'testing';
 
 
 const expect = chai.expect;
@@ -16,9 +17,7 @@ describe('server', () => {
       database.migrate.latest()
         .then(() => database.seed.run())
         .then(() => done())
-        .catch(error => {
-          throw error
-        })
+        .catch(error => error)
         .done()
     })
     describe('GET', () => {
@@ -49,7 +48,7 @@ describe('server', () => {
     after(done => {
       database.migrate.rollback()
         .then(() => done())
-        .catch((error) => throw error)
+        .catch((error) => error)
         .done()
     })
   });
@@ -58,9 +57,7 @@ describe('server', () => {
       database.migrate.latest()
         .then(() => database.seed.run())
         .then(() => done())
-        .catch(error => {
-          throw error
-        })
+        .catch(error => error)
         .done()
     })
     describe('GET', () => {
@@ -121,7 +118,7 @@ describe('server', () => {
   after(done => {
     database.migrate.rollback()
       .then(() => done())
-      .catch((error) => throw error)
+      .catch((error) => error)
       .done()
   })
   describe('/api/v1/recipes/:id', () => {
@@ -129,9 +126,7 @@ describe('server', () => {
       database.migrate.latest()
         .then(() => database.seed.run())
         .then(() => done())
-        .catch(error => {
-          throw error
-        })
+        .catch(error => error)
         .done()
     })
     describe('PUT', () => {
@@ -147,7 +142,7 @@ describe('server', () => {
   after(done => {
     database.migrate.rollback()
       .then(() => done())
-      .catch((error) => throw error)
+      .catch((error) => error)
       .done()
   })
   })
