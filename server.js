@@ -121,9 +121,9 @@ app.delete('/api/v1/recipes/:id', async (req, res) => {
       .del();
 
     await Promise.all(
-      ingredientIds.map(id =>
+      ingredientIds.map(ingredient =>
         database('ingredients')
-          .where('id', id.ingredient_id)
+          .where('id', ingredient.ingredient_id)
           .del(),
       ),
     );
@@ -132,12 +132,11 @@ app.delete('/api/v1/recipes/:id', async (req, res) => {
       .where('recipe_id', id)
       .del();
 
-    const deleted = await database('recipes')
+    await database('recipes')
       .where('id', id)
       .del();
     res.status(204).json({ message: `Successfully deleted recipe id ${id}` });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ error });
   }
 });
