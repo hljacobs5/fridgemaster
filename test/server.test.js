@@ -1,3 +1,4 @@
+/*eslint-disable*/
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../server');
@@ -113,13 +114,13 @@ describe('server', () => {
           })
       })
     })
+    after(done => {
+      database.migrate.rollback()
+        .then(() => done())
+        .catch((error) => error)
+        .done()
+    })
   });
-  after(done => {
-    database.migrate.rollback()
-      .then(() => done())
-      .catch((error) => error)
-      .done()
-  })
   describe('/api/v1/recipes/:id', () => {
     before(done => {
       database.migrate.latest()
@@ -134,12 +135,15 @@ describe('server', () => {
           recipe_name: 'billys bootastic bacon & eggs'
         }
         chai.request(app)
-          .put('/api/v1/recipes/2')
-          .send()
+          .put('/api/v1/recipes/1')
+          .send(name)
           .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
             done();
           });
       })
+      //it should return a 404 if recipe does not exist
     })
   after(done => {
     database.migrate.rollback()
