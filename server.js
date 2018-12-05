@@ -54,29 +54,24 @@ app.post('/api/v1/recipes', async (req, res) => {
   } else {
     try {
       const { recipe_name, ingredients, steps } = recipe
-      console.log(recipe_name, ingredients, steps)
-      const recipe_id = await database('recipes').insert(recipe_name, 'id');
-      console.log(recipe_id)
+      const recipe_id = await database('recipes').insert({recipe_name}, 'id');
       const ingredientIds = await Promise.all(
-        ingedients.map(ingredient => {
-          return database('ingredients').insert(ingredient, 'id');
+        ingredients.map(ingredient => {
+          return database('ingredients').insert({ingredient_name: ingredient}, 'id');
         })
       );
-      console.log(ingredientIds)
       const joinedIds = await Promise.all(
-        ingredientIds.map(ingredient_id => {
+        ingredientIds.map(id => {
           return database('recipe_ingredients').insert(
-            {ingredient_id, recipe_id: recipe_id[0]},
+            {ingredient_id: id[0], recipe_id: recipe_id[0]},
             'id',
           );
         })
       );
-      console.log(joinedIds)
       res
         .status(201)
         .json({message: `Recipe ${recipe.name} inserted, id ${recipe_id}`});
     } catch (error) {
-      console.log(error)
       res.status(500).json({error});
     }
   }
