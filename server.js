@@ -23,29 +23,29 @@ const app = express();
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
 
-app.get('/api/v1/ingredients', (req, res) => {
-  database('ingredients')
-    .select()
-    .then((ingredients) => {
-      res.status(200).json(ingredients);
-    })
-    .catch(error => res.json(error));
+app.get('/api/v1/ingredients', async (req, res) => {
+  try {
+    const ingredients = await database('ingredients').select();
+    res.status(200).json(ingredients);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
-app.get('/api/v1/recipes', (req, res) => {
-  database('recipes')
-    .select()
-    .then((recipes) => {
-      res.status(200).json(recipes);
-    })
-    .catch(error => res.json(error));
+app.get('/api/v1/recipes', async (req, res) => {
+  try {
+    const recipes = await database('recipes').select();
+    res.status(200).json(recipes);
+  } catch (eror) {
+    res.status(500).json(error);
+  }
 });
 
 app.post('/api/v1/recipes', async (req, res) => {
   const recipe = req.body;
   let missingProps = [];
 
-  ['recipe_name', 'steps', 'ingredients'].forEach((requiredParam) => {
+  ['recipe_name', 'steps', 'ingredients'].forEach(requiredParam => {
     if (!recipe[requiredParam]) {
       missingProps = [...missingProps, requiredParam];
     }
@@ -56,12 +56,15 @@ app.post('/api/v1/recipes', async (req, res) => {
     });
   } else {
     try {
-      const { recipe_name, ingredients, steps } = recipe
+      const {recipe_name, ingredients, steps} = recipe;
       const recipe_id = await database('recipes').insert({recipe_name}, 'id');
       const ingredientIds = await Promise.all(
         ingredients.map(ingredient => {
-          return database('ingredients').insert({ingredient_name: ingredient}, 'id');
-        })
+          return database('ingredients').insert(
+            {ingredient_name: ingredient},
+            'id',
+          );
+        }),
       );
       const joinedIds = await Promise.all(
         ingredientIds.map(id => {
@@ -69,7 +72,7 @@ app.post('/api/v1/recipes', async (req, res) => {
             {ingredient_id: id[0], recipe_id: recipe_id[0]},
             'id',
           );
-        })
+        }),
       );
       res
         .status(201)
