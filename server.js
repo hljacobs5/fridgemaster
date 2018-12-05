@@ -73,7 +73,13 @@ app.post('/api/v1/recipes', async (req, res) => {
         ),
       );
       await Promise.all(
-        steps.map((step_text, step_num) => database('recipe_steps').insert({ step_num, step_text, recipe_id }, 'id')));
+        steps.map((step_text, step_num) =>
+          database('recipe_steps').insert(
+            { step_num, step_text, recipe_id },
+            'id',
+          ),
+        ),
+      );
       res
         .status(201)
         .json({ message: `Recipe ${recipe_name} inserted, id ${recipe_id}` });
@@ -88,13 +94,50 @@ app.put('/api/v1/recipes/:id', async (req, res) => {
   const recipe = req.body;
 
   try {
-    const newRecipeIds = await database('recipes').where('id', id).update(recipe, 'id');
+    const newRecipeIds = await database('recipes')
+      .where('id', id)
+      .update(recipe, 'id');
     if (!newRecipeIds.length) {
       res.status(404).json({ message: `recipe with id ${id} does not exist.` });
     } else {
-      res.status(200).json({ message: `Success! Record with id ${id} updated with ${recipe}.` });
+      res.status(200).json({
+        message: `Success! Record with id ${id} updated with ${recipe}.`,
+      });
     }
   } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+app.delete('/api/v1/recipes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const ingredientIds = await database('recipe_ingredients')
+      .where('recipe_id', id)
+      .select();
+
+    await database('recipe_ingredients')
+      .where('recipe_id', id)
+      .del();
+
+    await Promise.all(
+      ingredientIds.map(id =>
+        database('ingredients')
+          .where('id', id.ingredient_id)
+          .del(),
+      ),
+    );
+
+    await database('recipe_steps')
+      .where('recipe_id', id)
+      .del();
+
+    const deleted = await database('recipes')
+      .where('id', id)
+      .del();
+    res.status(204).json({ message: `Successfully deleted recipe id ${id}` });
+  } catch (error) {
+    console.log(error.message);
     res.status(500).json({ error });
   }
 });
@@ -103,15 +146,23 @@ app.get('/api/v1/ingredients/:id/recipes', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const recipeReferences = await database('recipe_ingredients').where('ingredient_id', id).select();
+    const recipeReferences = await database('recipe_ingredients')
+      .where('ingredient_id', id)
+      .select();
     if (!recipeReferences.length) {
-      res.status(404).json({ message: `ingredient with id ${id} does not exist please try harder` });
+      res.status(404).json({
+        message: `ingredient with id ${id} does not exist please try harder`,
+      });
       return;
     }
-    const recipes = await Promise.all(recipeReferences.map(reference => {
-      const { recipe_id } = reference;
-      return database('recipes').where('id', recipe_id).select();
-    }));
+    const recipes = await Promise.all(
+      recipeReferences.map(reference => {
+        const { recipe_id } = reference;
+        return database('recipes')
+          .where('id', recipe_id)
+          .select();
+      }),
+    );
     res.status(200).json(...recipes);
   } catch (error) {
     res.status(500).json({ error });
