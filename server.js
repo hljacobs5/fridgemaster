@@ -57,7 +57,8 @@ app.post('/api/v1/recipes', async (req, res) => {
   } else {
     try {
       const { recipe_name, ingredients, steps } = recipe;
-      const recipe_id = await database('recipes').insert({ recipe_name }, 'id');
+      const recipeIds = await database('recipes').insert({ recipe_name }, 'id');
+      const recipe_id = recipeIds[0]
       const ingredientIds = await Promise.all(
         ingredients.map(ingredient =>
           database('ingredients').insert({ ingredient_name: ingredient }, 'id'),
@@ -66,24 +67,20 @@ app.post('/api/v1/recipes', async (req, res) => {
       await Promise.all(
         ingredientIds.map(id =>
           database('recipe_ingredients').insert(
-            { ingredient_id: id[0], recipe_id: recipe_id[0] },
+            { ingredient_id: id[0], recipe_id: recipe_id },
             'id',
           ),
         ),
       );
-      await Promise.all(
-        steps.map((step, index) =>
-          database('recipe_steps').insert({
-            step_num: index + 1,
-            step_text: step,
-            recipe_id,
-          }),
-        ),
-      );
+      const stepIds = await Promise.all(
+        steps.map((step_text, step_num) => {
+          return database('recipe_steps').insert({step_num, step_text, recipe_id}, 'id')
+        }));
       res
         .status(201)
-        .json({ message: `Recipe ${recipe.name} inserted, id ${recipe_id}` });
+        .json({ message: `Recipe ${recipe_name} inserted, id ${recipe_id}` });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ error });
     }
   }
