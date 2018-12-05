@@ -66,7 +66,7 @@ describe('server', () => {
           .request(app)
           .get('/api/v1/recipes')
           .end((error, res) => {
-            expect(error).to.equal(null);
+            expect(error).to.be.null;
             expect(res).to.have.status(200)
             done();
           });
@@ -147,6 +147,43 @@ describe('server', () => {
       .then(() => done())
       .catch((error) => error)
       .done()
+    })
   })
+  describe('/api/v1/ingredients/:id/recipes', () => {
+    before(done => {
+      database.migrate.latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => error)
+        .done()
+    })
+
+    describe('GET', () => {
+      it('should return 200 if ok', (done) => {
+        chai.request(app)
+          .get('/api/v1/ingredients/1/recipes')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
+      it('')
+    })
+    after(done => {
+      database.migrate.rollback()
+        .then(() => done())
+        .catch(error => error)
+        .done()
+    })
   })
 });
+
+
+
+
+
+
+
+
+

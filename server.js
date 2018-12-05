@@ -9,7 +9,7 @@ const database = knex(config);
 const app = express();
 
 // * GET /api/v1/ingredients
-// GET /api/v1/ingredients/:id/recipes
+//  GET /api/v1/ingredients/:id/recipes
 // * GET /api/v1/recipes
 // GET /api/v1/recipes/:id/ingredients
 // GET /api/v1/recipes/:id/steps
@@ -72,7 +72,7 @@ app.post('/api/v1/recipes', async (req, res) => {
           ),
         ),
       );
-      const stepIds = await Promise.all(
+      await Promise.all(
         steps.map((step_text, step_num) => {
           return database('recipe_steps').insert({step_num, step_text, recipe_id}, 'id')
         }));
@@ -80,11 +80,25 @@ app.post('/api/v1/recipes', async (req, res) => {
         .status(201)
         .json({ message: `Recipe ${recipe_name} inserted, id ${recipe_id}` });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error });
     }
   }
 });
+
+app.get('/api/v1/ingredients/:id/recipes', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const recipeReferences = await database('recipe_ingredients').where('ingredient_id', id).select()
+    const recipes = await Promise.all(recipeReferences.map(reference => {
+      const { recipe_id } = reference
+      return database('recipes').where('id', recipe_id).select()
+    }))
+    res.status(200).json(...recipes)
+  } catch (error) {
+    res.status(500).json({error})
+  }
+})
 
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
