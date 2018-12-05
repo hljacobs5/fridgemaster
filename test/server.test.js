@@ -137,6 +137,9 @@ describe('server', () => {
         chai.request(app)
           .put('/api/v1/recipes/2')
           .send()
+          .end((error, res) => {
+            done();
+          });
       })
     })
   after(done => {
