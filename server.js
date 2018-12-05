@@ -15,9 +15,9 @@ const app = express();
 // GET /api/v1/recipes/:id/steps
 // POST /api/v1/recipes/:id/steps
 // * POST /api/v1/recipes
-// PUT /api/v1/recipes/:id
+// * PUT /api/v1/recipes/:id
 // PUT /api/v1/recipes/:recipe_id/steps/:step_num
-// DELETE /api/v1/recipes/:id
+// * DELETE /api/v1/recipes/:id
 // DELETE /api/v1/recipes/:recipe_id/steps/
 
 app.use(bodyParser.json());
@@ -115,6 +115,13 @@ app.delete('/api/v1/recipes/:id', async (req, res) => {
     const ingredientIds = await database('recipe_ingredients')
       .where('recipe_id', id)
       .select();
+
+    if (!ingredientIds.length) {
+      res.status(404).json({
+        message: `No recipe id${id} found`,
+      });
+      return;
+    }
 
     await database('recipe_ingredients')
       .where('recipe_id', id)

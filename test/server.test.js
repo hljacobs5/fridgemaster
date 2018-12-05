@@ -181,6 +181,16 @@ describe('server', () => {
             done();
           });
       });
+      it('Should return a 404 if no record exists', done => {
+        chai
+          .request(app)
+          .del('/api/v1/recipes/200')
+          .end((error, res) => {
+            expect(error).to.be.null;
+            expect(res).to.have.status(404);
+            done();
+          });
+      });
     });
     after(done => {
       database.migrate
@@ -231,6 +241,29 @@ describe('server', () => {
           });
       });
     });
+    after(done => {
+      database.migrate
+        .rollback()
+        .then(() => done())
+        .catch(error => error)
+        .done();
+    });
+  });
+  describe('/api/v1/recipes/:recipe_id/steps', () => {
+    before(done => {
+      database.migrate
+        .latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => error)
+        .done();
+    });
+    describe('DELETE', () => {
+      it('Should return status 404', done => {
+        done();
+      });
+    });
+
     after(done => {
       database.migrate
         .rollback()
