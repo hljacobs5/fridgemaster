@@ -249,7 +249,7 @@ describe('server', () => {
         .done();
     });
   });
-  describe('/api/v1/recipes/:recipe_id/steps', () => {
+  describe('/api/v1/recipes/:id/steps', () => {
     before(done => {
       database.migrate
         .latest()

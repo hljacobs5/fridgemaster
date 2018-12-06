@@ -12,7 +12,7 @@ const app = express();
 // * GET /api/v1/ingredients/:id/recipes
 // * GET /api/v1/recipes
 // GET /api/v1/recipes/:id/ingredients
-// GET /api/v1/recipes/:recipe_id/steps
+// * GET /api/v1/recipes/:recipe_id/steps
 // POST /api/v1/recipes/:recipe_id/steps
 // * POST /api/v1/recipes
 // * PUT /api/v1/recipes/:id
