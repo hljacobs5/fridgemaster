@@ -175,6 +175,23 @@ app.get('/api/v1/ingredients/:id/recipes', async (req, res) => {
   }
 });
 
+app.delete('/api/v1/recipes/:id/steps', async (req, res) => {
+  const { id } = req.params;
+
+  try{
+    const steps = await database('recipe_steps').where('recipe_id', id).select();
+    if(!steps.length) {
+      res.status(404).json({ message: `Recipe with id ${id} not found` });
+      return; 
+    }
+    await database('recipe_steps').where('recipe_id', steps[steps.length - 1].recipe_id).del();
+    res.status(204).json({ message: `Recipe id ${id} step #${steps.length} deleted` });
+  } catch(error) {
+    res.status(500).json({ error });
+  }
+
+})
+
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });

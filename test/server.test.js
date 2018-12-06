@@ -260,8 +260,23 @@ describe('server', () => {
     });
     describe('DELETE', () => {
       it('Should return status 404', done => {
-        done();
+        chai.request(app)
+          .del('/api/v1/recipes/500/steps')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done();
+          })
       });
+      it('should return a status 204', done => {
+        chai.request(app)
+          .del('/api/v1/recipes/1/steps')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(204)
+            done()
+          })
+      })
     });
 
     after(done => {
