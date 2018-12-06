@@ -340,6 +340,44 @@ describe('server', () => {
         .done();
     });
   });
+
+  describe('/api/v1/recipes/:id/ingredients', () => {
+    before(done => {
+      database.migrate
+        .latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => error)
+        .done();
+    });
+    describe('GET', () => {
+      it('should return a 200 status if ok', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/1/ingredients')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
+      it('should return a 404 status if id does not exist', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/5000/ingredients')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
+    after(done => {
+      database.migrate
+        .rollback()
+        .then(() => done())
+        .catch(error => error)
+        .done();
+    });
+  })
+  })
   describe('/api/v1/recipes/:recipe_id/steps/:step_num', () => {
     before(done => {
       database.migrate
@@ -384,12 +422,12 @@ describe('server', () => {
             done()
           })
       })
-    after(done => {
-      database.migrate
-        .rollback()
-        .then(() => done())
-        .catch(error => error)
-        .done();
-      });
-    })
+  })
+  after(done => {
+    database.migrate
+      .rollback()
+      .then(() => done())
+      .catch(error => error)
+      .done();
+  });  
 });

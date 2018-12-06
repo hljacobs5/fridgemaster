@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const knex = require('knex');
 
 const environment = process.env.NODE_ENV || 'development';
@@ -20,7 +19,7 @@ const app = express();
 // * DELETE /api/v1/recipes/:id
 // * DELETE /api/v1/recipes/:recipe_id/steps/
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.set('port', process.env.PORT || 3000);
 
 app.get('/api/v1/ingredients', async (req, res) => {
@@ -73,11 +72,8 @@ app.post('/api/v1/recipes', async (req, res) => {
         ),
       );
       await Promise.all(
-        steps.map((step_text) =>
-          database('recipe_steps').insert(
-            { step_text, recipe_id },
-            'id',
-          ),
+        steps.map(step_text =>
+          database('recipe_steps').insert({ step_text, recipe_id }, 'id'),
         ),
       );
       res
@@ -202,7 +198,9 @@ app.post('/api/v1/recipes/:id/steps', async (req, res) => {
   }
 
   try {
-    const recipeId = await database('recipes').where('id', id).select();
+    const recipeId = await database('recipes')
+      .where('id', id)
+      .select();
     if (!recipeId.length) {
       res.status(404).json({ message: `Recipe with id ${id} not found` });
       return;
@@ -211,11 +209,9 @@ app.post('/api/v1/recipes/:id/steps', async (req, res) => {
       { step_text, recipe_id: id },
       'id',
     );
-    res
-      .status(201)
-      .json({
-        message: `Created new step for recipe id ${id} at step id ${step}`,
-      });
+    res.status(201).json({
+      message: `Created new step for recipe id ${id} at step id ${step}`,
+    });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -267,10 +263,24 @@ app.put('/api/v1/recipes/:recipe_id/steps/:step_num', async (req, res) => {
   }
 });
 
+app.get('/api/v1/recipes/:id/ingredients', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const ingredientIds = await database('recipe_ingredients').where('recipe_id', id).select();
+    if (!ingredientIds.length) {
+      res.status(404).json({ message: `Recipe with id${id} does not exist.` });
+      return;
+    }
+    const ingredients = await Promise.all(ingredientIds.map(ingredient => database('ingredients').where('id', ingredient.ingredient_id).select()));
+    res.status(200).json({ ingredients });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });
-
-app.use(bodyParser.json());
 
 module.exports = app;
