@@ -287,7 +287,7 @@ describe('server', () => {
         const step = {
           step_text: 'churn the butter',
         }
-        chai.request(app).del('/api/v1/recipes/500/steps')
+        chai.request(app).post('/api/v1/recipes/500/steps')
           .send(step)
           .end((error, res) => {
             expect(error).to.be.null;
@@ -296,7 +296,11 @@ describe('server', () => {
           });
       });
       it('Should return a status of 201', done => {
-        chai.request(app).del('/api/v1/recipes/1/steps')
+        const step = {
+          step_text: 'churn the butter',
+          }
+        chai.request(app).post('/api/v1/recipes/1/steps')
+          .send(step)
           .end((error, res) => {
             expect(error).to.be.null;
             expect(res).to.have.status(201);

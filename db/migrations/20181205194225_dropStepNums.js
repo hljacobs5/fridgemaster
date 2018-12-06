@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
 exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.table('recipe_steps', table => {
-      table.interger('recipe_steps');
+      table.integer('recipe_steps');
     })
   ]);
 

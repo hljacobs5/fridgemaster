@@ -13,7 +13,7 @@ const app = express();
 // * GET /api/v1/recipes
 // GET /api/v1/recipes/:id/ingredients
 // * GET /api/v1/recipes/:recipe_id/steps
-// POST /api/v1/recipes/:recipe_id/steps
+// * POST /api/v1/recipes/:recipe_id/steps
 // * POST /api/v1/recipes
 // * PUT /api/v1/recipes/:id
 // PUT /api/v1/recipes/:recipe_id/steps/:step_num
@@ -73,9 +73,9 @@ app.post('/api/v1/recipes', async (req, res) => {
         ),
       );
       await Promise.all(
-        steps.map((step_text, step_num) =>
+        steps.map((step_text) =>
           database('recipe_steps').insert(
-            { step_num, step_text, recipe_id },
+            { step_text, recipe_id },
             'id',
           ),
         ),
@@ -194,21 +194,21 @@ app.get('/api/v1/recipes/:id/steps', async (req, res) => {
 
 app.post('/api/v1/recipes/:id/steps', async (req, res) => {
   const { id } = req.params;
-  const missingParams = [];
-  ['step_text'].forEach(requiredParam => {
-    if (!req.body[requiredParam]) {
-      missingParams.push(requiredParam);
-    }
-  });
+  const { step_text } = req.body;
 
-  if (missingParams.length) {
-    res.status(422).json({ message: `Missing parameters ${missingParams}` });
+  if (!step_text) {
+    res.status(422).json({ message: `Missing parameter step_text` });
     return;
   }
 
   try {
+    const recipeId = await database('recipes').where('id', id).select()
+    if (!recipeId.length) {
+      res.status(404).json({ message: `Recipe with id ${id} not found`})
+      return;
+    }
     const step = await database('recipe_steps').insert(
-      { ...res.body, recipe_id: id },
+      {step_text , recipe_id: id },
       'id',
     );
     res
