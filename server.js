@@ -179,7 +179,9 @@ app.get('/api/v1/recipes/:id/steps', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const steps = await database('recipe_steps').where('recipe_id', id).select();
+    const steps = await database('recipe_steps')
+      .where('recipe_id', id)
+      .select();
     if (!steps.length) {
       res.status(404).json({ message: `No steps found for recipe id${id}` });
       return;
@@ -190,17 +192,53 @@ app.get('/api/v1/recipes/:id/steps', async (req, res) => {
   }
 });
 
+app.post('/api/v1/recipes/:id/steps', async (req, res) => {
+  const { id } = req.params;
+  const missingParams = [];
+  ['step_text'].forEach(requiredParam => {
+    if (!req.body[requiredParam]) {
+      missingParams.push(requiredParam);
+    }
+  });
+
+  if (missingParams.length) {
+    res.status(422).json({ message: `Missing parameters ${missingParams}` });
+    return;
+  }
+
+  try {
+    const step = await database('recipe_steps').insert(
+      { ...res.body, recipe_id: id },
+      'id',
+    );
+    res
+      .status(201)
+      .json({
+        message: `Created new step for recipe id ${id} at step id ${step}`,
+      });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error });
+  }
+});
+
 app.delete('/api/v1/recipes/:id/steps', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const steps = await database('recipe_steps').where('recipe_id', id).select();
+    const steps = await database('recipe_steps')
+      .where('recipe_id', id)
+      .select();
     if (!steps.length) {
       res.status(404).json({ message: `Recipe with id ${id} not found` });
       return;
     }
-    await database('recipe_steps').where('recipe_id', steps[steps.length - 1].recipe_id).del();
-    res.status(204).json({ message: `Recipe id ${id} step #${steps.length} deleted` });
+    await database('recipe_steps')
+      .where('recipe_id', steps[steps.length - 1].recipe_id)
+      .del();
+    res
+      .status(204)
+      .json({ message: `Recipe id ${id} step #${steps.length} deleted` });
   } catch (error) {
     res.status(500).json({ error });
   }

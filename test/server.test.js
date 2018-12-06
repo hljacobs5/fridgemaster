@@ -250,55 +250,83 @@ describe('server', () => {
     });
   });
   describe('/api/v1/recipes/:id/steps', () => {
-    before(done => {
-      database.migrate
-        .latest()
+    beforeEach(done => {
+      database.migrate.rollback()
+        .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
-        .done();
+        .done()
     });
 
     describe('GET', () => {
       it('Should return status 404', done => {
-        chai.request(app)
+        chai
+          .request(app)
           .get('/api/v1/recipes/500/steps')
           .end((error, res) => {
-            expect(error).to.be.null
-            expect(res).to.have.status(404)
-            done()
-          })
-      })
+            expect(error).to.be.null;
+            expect(res).to.have.status(404);
+            done();
+          });
+      });
       it('Should return status 200 if ok', done => {
-        chai.request(app)
+        chai
+          .request(app)
           .get('/api/v1/recipes/1/steps')
           .end((error, res) => {
-            expect(error).to.be.null
-            expect(res).to.have.status(200)
-            done()
-          })
-      })
-    })
+            expect(error).to.be.null;
+            expect(res).to.have.status(200);
+            done();
+          });
+      });
+    });
+
+    describe('POST', () => {
+      it('Should return a status of 404', done => {
+        const step = {
+          step_text: 'churn the butter',
+        }
+        chai.request(app).del('/api/v1/recipes/500/steps')
+          .send(step)
+          .end((error, res) => {
+            expect(error).to.be.null;
+            expect(res).to.have.status(404);
+            done();
+          });
+      });
+      it('Should return a status of 201', done => {
+        chai.request(app).del('/api/v1/recipes/1/steps')
+          .end((error, res) => {
+            expect(error).to.be.null;
+            expect(res).to.have.status(201);
+            expect(res.body).to.have.key('message');
+            done();
+          });
+      });
+    });
 
     describe('DELETE', () => {
       it('Should return status 404', done => {
-        chai.request(app)
+        chai
+          .request(app)
           .del('/api/v1/recipes/500/steps')
           .end((error, res) => {
-            expect(error).to.be.null
-            expect(res).to.have.status(404)
+            expect(error).to.be.null;
+            expect(res).to.have.status(404);
             done();
-          })
+          });
       });
       it('should return a status 204', done => {
-        chai.request(app)
+        chai
+          .request(app)
           .del('/api/v1/recipes/1/steps')
           .end((error, res) => {
-            expect(error).to.be.null
-            expect(res).to.have.status(204)
-            done()
-          })
-      })
+            expect(error).to.be.null;
+            expect(res).to.have.status(204);
+            done();
+          });
+      });
     });
     after(done => {
       database.migrate
