@@ -12,13 +12,13 @@ const app = express();
 // * GET /api/v1/ingredients/:id/recipes
 // * GET /api/v1/recipes
 // GET /api/v1/recipes/:id/ingredients
-// GET /api/v1/recipes/:id/steps
-// POST /api/v1/recipes/:id/steps
+// GET /api/v1/recipes/:recipe_id/steps
+// POST /api/v1/recipes/:recipe_id/steps
 // * POST /api/v1/recipes
 // * PUT /api/v1/recipes/:id
 // PUT /api/v1/recipes/:recipe_id/steps/:step_num
 // * DELETE /api/v1/recipes/:id
-// DELETE /api/v1/recipes/:recipe_id/steps/
+// * DELETE /api/v1/recipes/:recipe_id/steps/
 
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
@@ -170,6 +170,21 @@ app.get('/api/v1/ingredients/:id/recipes', async (req, res) => {
       }),
     );
     res.status(200).json(...recipes);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+app.get('/api/v1/recipes/:id/steps', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const steps = await database('recipe_steps').where('recipe_id', id).select();
+    if (!steps.length) {
+      res.status(404).json({ message: `No steps found for recipe id${id}` });
+      return;
+    }
+    res.status(200).json({ steps });
   } catch (error) {
     res.status(500).json({ error });
   }

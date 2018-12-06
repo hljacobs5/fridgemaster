@@ -258,6 +258,28 @@ describe('server', () => {
         .catch(error => error)
         .done();
     });
+
+    describe('GET', () => {
+      it('Should return status 404', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/500/steps')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
+      it('Should return status 200 if ok', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/1/steps')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
+    })
+
     describe('DELETE', () => {
       it('Should return status 404', done => {
         chai.request(app)
@@ -278,7 +300,6 @@ describe('server', () => {
           })
       })
     });
-
     after(done => {
       database.migrate
         .rollback()
