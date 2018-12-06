@@ -340,4 +340,56 @@ describe('server', () => {
         .done();
     });
   });
+  describe('/api/v1/recipes/:recipe_id/steps/:step_num', () => {
+    before(done => {
+      database.migrate
+        .latest()
+        .then(() => database.seed.run())
+        .then(() => done())
+        .catch(error => error)
+        .done();
+    });
+    describe('PUT', () => {
+      it('should return a status of 204 if successful', done => {
+        const step = {step_text: 'Insert food into face'}
+        chai.request(app)
+          .put('/api/v1/recipes/2/steps/1')
+          .send(step)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(204)
+            done()
+          })
+      })
+    })
+      it('should return 404 if recipe id does not exist', done => {
+        const step = {step_text: 'Insert food into face'}
+        chai.request(app)
+          .put('/api/v1/recipes/5000/steps/1')
+          .send(step)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
+      it('should return 404 if recipe id does not exist', done => {
+        const step = {step_text: 'Insert food into face'}
+        chai.request(app)
+          .put('/api/v1/recipes/1/steps/5000')
+          .send(step)
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(404)
+            done()
+          })
+      })
+    after(done => {
+      database.migrate
+        .rollback()
+        .then(() => done())
+        .catch(error => error)
+        .done();
+      });
+    })
 });
