@@ -239,6 +239,22 @@ app.delete('/api/v1/recipes/:id/steps', async (req, res) => {
   }
 });
 
+app.get('/api/v1/recipes/:id/ingredients', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const ingredientIds = await database('recipe_ingredients').where('recipe_id', id).select();
+    if (!ingredientIds.length) {
+      res.status(404).json({ message: `Recipe with id${id} does not exist.` });
+      return;
+    }
+    const ingredients = await Promise.all(ingredientIds.map(ingredient => database('ingredients').where('id', ingredient.ingredient_id).select()));
+    res.status(200).json({ ingredients });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });
