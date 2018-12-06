@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const knex = require('knex');
 
 const environment = process.env.NODE_ENV || 'development';
@@ -20,7 +19,7 @@ const app = express();
 // * DELETE /api/v1/recipes/:id
 // * DELETE /api/v1/recipes/:recipe_id/steps/
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.set('port', process.env.PORT || 3000);
 
 app.get('/api/v1/ingredients', async (req, res) => {
@@ -73,11 +72,8 @@ app.post('/api/v1/recipes', async (req, res) => {
         ),
       );
       await Promise.all(
-        steps.map((step_text) =>
-          database('recipe_steps').insert(
-            { step_text, recipe_id },
-            'id',
-          ),
+        steps.map(step_text =>
+          database('recipe_steps').insert({ step_text, recipe_id }, 'id'),
         ),
       );
       res
@@ -197,27 +193,26 @@ app.post('/api/v1/recipes/:id/steps', async (req, res) => {
   const { step_text } = req.body;
 
   if (!step_text) {
-    res.status(422).json({ message: `Missing parameter step_text` });
+    res.status(422).json({ message: 'Missing parameter step_text' });
     return;
   }
 
   try {
-    const recipeId = await database('recipes').where('id', id).select()
+    const recipeId = await database('recipes')
+      .where('id', id)
+      .select();
     if (!recipeId.length) {
-      res.status(404).json({ message: `Recipe with id ${id} not found`})
+      res.status(404).json({ message: `Recipe with id ${id} not found` });
       return;
     }
     const step = await database('recipe_steps').insert(
-      {step_text , recipe_id: id },
+      { step_text, recipe_id: id },
       'id',
     );
-    res
-      .status(201)
-      .json({
-        message: `Created new step for recipe id ${id} at step id ${step}`,
-      });
+    res.status(201).json({
+      message: `Created new step for recipe id ${id} at step id ${step}`,
+    });
   } catch (error) {
-    console.log(error.message);
     res.status(500).json({ error });
   }
 });
@@ -247,7 +242,5 @@ app.delete('/api/v1/recipes/:id/steps', async (req, res) => {
 app.listen(app.get('port'), () => {
   console.log(`Listening on port ${app.get('port')}`);
 });
-
-app.use(bodyParser.json());
 
 module.exports = app;
