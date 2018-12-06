@@ -5,13 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=testing mocha --exit",
-    "eslint": "./node_modules/eslint/bin/eslint.js ./*.js"
+    "eslint": "./node_modules/eslint/bin/eslint.js ./*.js",
+    "testwc": "nyc --reporter=text mocha --exit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "knex": "^0.15.2",
     "pg": "^7.7.1"
@@ -24,6 +24,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
   }
 }
