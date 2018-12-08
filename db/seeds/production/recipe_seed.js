@@ -1,5 +1,5 @@
 /*eslint-disable*/
-const recipes = require('./recipes');
+const recipes = require('../recipes');
 exports.seed = function(knex, Promise) {
   return knex('recipe_steps')
     .del()
