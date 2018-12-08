@@ -1,6 +1,6 @@
 
 # Fridgemaster API Documentation
-================================
+--------------------------------
 ## /api/v1/ingredients
 ### `GET`
 
