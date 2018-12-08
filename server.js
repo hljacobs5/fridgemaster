@@ -32,9 +32,11 @@ app.get('/api/v1/ingredients', async (req, res) => {
 });
 
 app.get('/api/v1/recipes', async (req, res) => {
-  const { query } = req
+  const { query } = req;
 
-  if(query.recipe_name || query.id)
+  if (query.recipe_name || query.id) {
+    return;
+  }
   try {
     const recipes = await database('recipes').select();
     res.status(200).json(recipes);
