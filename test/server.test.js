@@ -12,14 +12,16 @@ chai.use(chaiHttp);
 
 describe('server', () => {
   describe('/api/v1/ingredients', () => {
-    before(done => {
+    beforeEach(done => {
       database.migrate
-        .latest()
+        .rollback()
+        .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
         .done();
     });
+
     describe('GET', () => {
       it('should return a 200 status', done => {
         chai
@@ -54,9 +56,10 @@ describe('server', () => {
     });
   });
   describe('/api/v1/recipes', () => {
-    before(done => {
+    beforeEach(done => {
       database.migrate
-        .latest()
+        .rollback()
+        .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
@@ -132,9 +135,10 @@ describe('server', () => {
     });
   });
   describe('/api/v1/recipes/:id', () => {
-    before(done => {
+    beforeEach(done => {
       database.migrate
-        .latest()
+        .rollback()
+        .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
@@ -201,15 +205,15 @@ describe('server', () => {
     });
   });
   describe('/api/v1/ingredients/:id/recipes', () => {
-    before(done => {
+    beforeEach(done => {
       database.migrate
-        .latest()
+        .rollback()
+        .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
         .done();
     });
-
     describe('GET', () => {
       it('should return 200 if ok', done => {
         chai
@@ -251,12 +255,13 @@ describe('server', () => {
   });
   describe('/api/v1/recipes/:id/steps', () => {
     beforeEach(done => {
-      database.migrate.rollback()
+      database.migrate
+        .rollback()
         .then(() => database.migrate.latest())
         .then(() => database.seed.run())
         .then(() => done())
         .catch(error => error)
-        .done()
+        .done();
     });
 
     describe('GET', () => {
@@ -286,8 +291,10 @@ describe('server', () => {
       it('Should return a status of 404', done => {
         const step = {
           step_text: 'churn the butter',
-        }
-        chai.request(app).post('/api/v1/recipes/500/steps')
+        };
+        chai
+          .request(app)
+          .post('/api/v1/recipes/500/steps')
           .send(step)
           .end((error, res) => {
             expect(error).to.be.null;
@@ -298,8 +305,10 @@ describe('server', () => {
       it('Should return a status of 201', done => {
         const step = {
           step_text: 'churn the butter',
-          }
-        chai.request(app).post('/api/v1/recipes/1/steps')
+        };
+        chai
+          .request(app)
+          .post('/api/v1/recipes/1/steps')
           .send(step)
           .end((error, res) => {
             expect(error).to.be.null;
