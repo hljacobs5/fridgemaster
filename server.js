@@ -32,12 +32,31 @@ app.get('/api/v1/ingredients', async (req, res) => {
 });
 
 app.get('/api/v1/recipes', async (req, res) => {
-  const { query } = req;
+  const { originalUrl, query } = req;
+  let missingProps = []
 
-  if (query.recipe_name || query.id) {
-    return;
+  if(originalUrl.includes('?')) {
+    try{
+      ['recipe_name', 'id'].forEach(async key => {
+        if(query[key]) {
+          const recipe = await database('recipes').where([key], key).select()
+          return res.status(200).json({ recipe })
+        } else {
+          missingProps.push(key)
+        }
+      })
+    } catch(error) {
+      return res.status(500).json({ error })
+    }
+    if(missingProps.length) {
+      console.log('i ran')
+      res.status(400).json({ message: `You must have one of these keys ${missingProps} to make a query`})
+      return 
+    }
   }
+
   try {
+    console.log('regular get request')
     const recipes = await database('recipes').select();
     res.status(200).json(recipes);
   } catch (error) {

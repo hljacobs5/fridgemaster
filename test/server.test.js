@@ -94,12 +94,13 @@ describe('server', () => {
             done();
           });
       });
-      it('should return status 400 if key is missing from query', done => {
+      it('should return status 400 if recipe_name or id is missing from query', done => {
         chai.request(app)
           .get('/api/v1/recipes/?key=1')
           .end((error, res) => {
             expect(error).to.be.null
             expect(res).to.have.status(400)
+            done()
           })
       })
     });
