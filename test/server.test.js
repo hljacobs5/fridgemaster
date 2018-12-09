@@ -56,6 +56,7 @@ describe('server', () => {
     });
   });
   describe('/api/v1/recipes', () => {
+    describe('GET', () => {
     beforeEach(done => {
       database.migrate
         .rollback()
@@ -65,7 +66,6 @@ describe('server', () => {
         .catch(error => error)
         .done();
     });
-    describe('GET', () => {
       it('should return a 200 status', done => {
         chai
           .request(app)
