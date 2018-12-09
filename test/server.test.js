@@ -247,8 +247,6 @@ describe('server', () => {
               'created_at',
               'updated_at',
             ]);
-            expect(res.body[0].id).to.equal(1);
-            expect(res.body[0].recipe_name).to.equal('chicken pot pie');
             done();
           });
       });
