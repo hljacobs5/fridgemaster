@@ -32,12 +32,28 @@ app.get('/api/v1/ingredients', async (req, res) => {
 });
 
 app.get('/api/v1/recipes', async (req, res) => {
+  const { originalUrl, query } = req;
+
+  if (originalUrl.includes('?')) {
+    try {
+      if (query.recipe_name) {
+        const recipe = await database('recipes').where('recipe_name', query.recipe_name).select();
+
+        return res.status(200).json({ recipe });
+      }
+      return res.status(400).json({ message: 'Your query must include -recipe_name- as a key' });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
   try {
     const recipes = await database('recipes').select();
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json(error);
   }
+  return true;
 });
 
 app.post('/api/v1/recipes', async (req, res) => {

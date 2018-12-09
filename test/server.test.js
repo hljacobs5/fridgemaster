@@ -56,6 +56,7 @@ describe('server', () => {
     });
   });
   describe('/api/v1/recipes', () => {
+    describe('GET', () => {
     beforeEach(done => {
       database.migrate
         .rollback()
@@ -65,7 +66,6 @@ describe('server', () => {
         .catch(error => error)
         .done();
     });
-    describe('GET', () => {
       it('should return a 200 status', done => {
         chai
           .request(app)
@@ -94,6 +94,24 @@ describe('server', () => {
             done();
           });
       });
+      it('should return status 400 if recipe_name or id is missing from query', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/?key=1')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(400)
+            done()
+          })
+      })
+      it('should return status 200 if correct keys exist in query', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/?recipe_name=chicken+pot+pie')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
     });
     describe('POST', () => {
       it('should return a 201 status if successful', done => {
