@@ -103,6 +103,15 @@ describe('server', () => {
             done()
           })
       })
+      it('should return status 200 if correct keys exist in query', done => {
+        chai.request(app)
+          .get('/api/v1/recipes/?recipe_name=chicken+pot+pie')
+          .end((error, res) => {
+            expect(error).to.be.null
+            expect(res).to.have.status(200)
+            done()
+          })
+      })
     });
     describe('POST', () => {
       it('should return a 201 status if successful', done => {

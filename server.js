@@ -33,35 +33,30 @@ app.get('/api/v1/ingredients', async (req, res) => {
 
 app.get('/api/v1/recipes', async (req, res) => {
   const { originalUrl, query } = req;
-  let missingProps = []
+  const missingProps = [];
 
-  if(originalUrl.includes('?')) {
-    try{
-      ['recipe_name', 'id'].forEach(async key => {
-        if(query[key]) {
-          const recipe = await database('recipes').where([key], key).select()
-          return res.status(200).json({ recipe })
-        } else {
-          missingProps.push(key)
-        }
-      })
-    } catch(error) {
-      return res.status(500).json({ error })
-    }
-    if(missingProps.length) {
-      console.log('i ran')
-      res.status(400).json({ message: `You must have one of these keys ${missingProps} to make a query`})
-      return 
+  if (originalUrl.includes('?')) {
+    try {
+      if (query.recipe_name) {
+        const recipe = await database('recipes').where('recipe_name', query.recipe_name).select()
+
+        return res.status(200).json({ recipe })
+      } else {
+        return res.status(400).json({ message: 'Your query must include -recipe_name- as a key'})
+      }
+    } catch (error) {
+      console.log('this is the error', error)
+      return res.status(500).json({ error });
     }
   }
 
   try {
-    console.log('regular get request')
     const recipes = await database('recipes').select();
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json(error);
   }
+  return true;
 });
 
 app.post('/api/v1/recipes', async (req, res) => {
