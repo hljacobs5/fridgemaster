@@ -126,6 +126,27 @@ Data returned for each recipe:
 ]
 ```
 
+#### Querying database
+
+Including the recipe name in the URL will return a specific recipe. 
+
+##### Example query:
+```url
+http://..../api/v1/recipes/?recipe_name=chicken+pot+pie
+```
+
+##### Example of returned JSON:
+```json
+[
+  {
+    "id": 17,
+    "recipe_name": "chicken pot pie",
+    "created_at": "2018-12-06T18:40:50.886Z",
+    "updated_at": "2018-12-06T18:40:50.886Z"
+  }
+]
+```
+
 ### `POST`
 
 Making an API call to this endpoint adds a recipe to the database.
