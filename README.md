@@ -7,11 +7,11 @@
 
 ### Contributing
 
-[Contribution Guide](./CONTRIBUTING.md)
+[Contribution Guide](bottd/fridgemaster/blob/master/CONTRIBUTING.md)
 
 ### APIs Used
 * Custom API -- Developed by us!
-* [Documentation](./DOCUMENTATION.md)
+* [Documentation](bottd/fridgemaster/blob/master/DOCUMENTATION.md)
 
 ### Primary Javascript technologies
 * Express
