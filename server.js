@@ -56,11 +56,11 @@ app.get('/api/v1/recipes', async (req, res) => {
   return true;
 });
 
-app.post('/api/v1/recipes', async (req, res) => {
-  const recipe = req.body;
-  let missingProps = [];
+app.post('/api/v1/recipes', function (req, res, next) {
+   const recipe = req.body;
+   let missingProps = [];
 
-  ['recipe_name', 'steps', 'ingredients'].forEach(requiredParam => {
+   ['recipe_name', 'steps', 'ingredients'].forEach(requiredParam => {
     if (!recipe[requiredParam]) {
       missingProps = [...missingProps, requiredParam];
     }
@@ -70,6 +70,13 @@ app.post('/api/v1/recipes', async (req, res) => {
       message: `Missing ${missingProps} parameters {recipe_name: <STRING>, steps: <ARRAY>, ingredients: <ARRAY>}`,
     });
   } else {
+    next();
+  }
+})
+
+app.post('/api/v1/recipes', async (req, res) => {
+   const recipe = req.body;
+ 
     try {
       const { recipe_name, ingredients, steps } = recipe;
       const recipeIds = await database('recipes').insert({ recipe_name }, 'id');
@@ -98,8 +105,7 @@ app.post('/api/v1/recipes', async (req, res) => {
     } catch (error) {
       res.status(500).json({ error });
     }
-  }
-});
+  });
 
 app.put('/api/v1/recipes/:id', async (req, res) => {
   const { id } = req.params;
