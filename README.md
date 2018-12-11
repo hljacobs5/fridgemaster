@@ -5,13 +5,17 @@
 ### See it Live
 [FridgeMaster](https://fridgemaster.herokuapp.com/)
 
+### Setup
+
+[Setup](https://github.com/bottd/fridgemaster/blob/master/GETTING_STARTED.md)
+
 ### Contributing
 
-[Contribution Guide](./CONTRIBUTING.md)
+[Contribution Guide](https://github.com/bottd/fridgemaster/blob/master/CONTRIBUTING.md)
 
 ### APIs Used
 * Custom API -- Developed by us!
-* [Documentation](./DOCUMENTATION.md)
+* [Documentation](https://github.com/bottd/fridgemaster/blob/master/DOCUMENTATION.md)
 
 ### Primary Javascript technologies
 * Express
