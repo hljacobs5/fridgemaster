@@ -1,23 +1,16 @@
 # Contribution Guide
 
-# Contributing to Denver Startup Week
-
 :tada: Thank you for taking the time to contribute! :tada:
 
-Like everything else with Denver Startup Week, the DSW website is an entirely
-volunteer-powered effort. The following is a set of guidelines for contributing
-to the DSW website. They will equip you with the information needed to make the
+Welcome to FridgeMaster! The following is a set of guidelines for contributing
+to the fridgemaster websiste. They will equip you with the information needed to make the
 most awesome contribution possible and will also make it as easy as possible for
 us to help you get your code into production. Pull requests or issues that don't
 demonstrate a thoughtful consideration of these guidelines may be closed without
 comment at the maintainers' discretion. Help us help you!
 
-## Code of Conduct 
-We have a code of conduct. Please be aware that it is also open an open source project. Please contribute [here](). Project maintainers, at their sole discretion, reserve the right to block
-contributors who violate the Code of Conduct.
-
 ## Suggestions
-In addition to asking you to agree to the Code of Conduct, we respectfully remind you that we are all volunteers who maintain this project in our free time. We believe strongly in sometimes offering constructive and actionable feedback on pull requests, but the turnaround on something thoughtful is often not immediate and extremely unlikely. Don't hold your breath! 
+We respectfully remind you that we are all volunteers who maintain this project in our free time. We believe strongly in sometimes offering constructive and actionable feedback on pull requests, but the turnaround on something thoughtful is often not immediate and extremely unlikely. Don't hold your breath! 
 
 ## What do I need to know before getting started?
 We maintain a list of open issues and have done our best to tag them, especially
