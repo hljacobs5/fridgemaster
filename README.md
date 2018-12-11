@@ -5,6 +5,10 @@
 ### See it Live
 [FridgeMaster](https://fridgemaster.herokuapp.com/)
 
+### Setup
+
+[Setup](https://github.com/bottd/fridgemaster/blob/master/GETTING_STARTED.md)
+
 ### Contributing
 
 [Contribution Guide](https://github.com/bottd/fridgemaster/blob/master/CONTRIBUTING.md)
