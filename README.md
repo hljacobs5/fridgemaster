@@ -5,9 +5,13 @@
 ### See it Live
 [FridgeMaster](https://fridgemaster.herokuapp.com/)
 
+### Contributing
+
+[Contribution Guide](./CONTRIBUTING.md)
+
 ### APIs Used
 * Custom API -- Developed by us!
-* [Documentation](./DOCUMENTATION) --also made by us
+* [Documentation](./DOCUMENTATION.md)
 
 ### Primary Javascript technologies
 * Express
@@ -24,10 +28,7 @@
 ### Test Driven Development
 
 FridgeMaster uses Mocha and Chai for all testing purposes
-
 `npm test` from the associated root directory
-
-### Next Steps
 
 ### Original Assignment
 
