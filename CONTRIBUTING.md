@@ -34,10 +34,12 @@ Before submitting a pull request, please take a few minutes to ensure that
 you've considered the following:
 - [ ] You've rebased the latest changes from master into your branch and
   addressed any merge conflicts (no merge commits, please).
-`git fetch origin # updates origin/master
+````bash
+git fetch origin # updates origin/master
 git checkout your-pr-branch
 git rebase origin/master # rebases your changes on top of origin/master
-git push your-fork your-pr-branch --force-with-lease # updates your PR, overwriting your previous changes`
+git push your-fork your-pr-branch --force-with-lease # updates your PR, overwriting your previous changes
+````
 - [ ] You've addressed anything caught by the linter. `npm run eslint`.
 - [ ] You've squashed any WIP(work in progress) or similar commits.
 - [ ] Commit messages are descriptive and reflect what was changed. For example, `fixes styling bug on contact page` and not `address issue #10`.
