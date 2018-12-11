@@ -3,7 +3,7 @@
  An interactive Application that allows you to search a database of movies and select favorites
 
 ### See it Live
-[ridgeMaster](https://fridgemaster.herokuapp.com/)
+[FridgeMaster](https://fridgemaster.herokuapp.com/)
 
 ### APIs Used
 * Custom API -- Developed by us!
