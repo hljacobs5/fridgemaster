@@ -69,6 +69,5 @@ function joinIngredients(knex, ingredient_id, recipe_id) {
 }
 
 function createSteps(knex, step_text, recipe_id) {
-  step_num += 1;
   return knex('recipe_steps').insert({ step_text, recipe_id }, 'id');
 }

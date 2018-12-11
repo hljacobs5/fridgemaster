@@ -23,6 +23,21 @@ app.use(express.json());
 app.set('port', process.env.PORT || 3000);
 
 app.get('/api/v1/ingredients', async (req, res) => {
+  const { originalUrl, query } = req;
+  
+  if (originalUrl.includes('?')) {
+   try {
+     if (query.ingredient_name) {
+       const ingredient = await database('ingredients').where('ingredient_name', query.ingredient_name).select();
+
+       return res.status(200).json({ ingredient });
+     }
+     return res.status(400).json({ message: 'Your query must include -ingredient_name- as a key' });
+   } catch (error) {
+     return res.status(500).json({ error });
+  }
+ }
+
   try {
     const ingredients = await database('ingredients').select();
     res.status(200).json(ingredients);
